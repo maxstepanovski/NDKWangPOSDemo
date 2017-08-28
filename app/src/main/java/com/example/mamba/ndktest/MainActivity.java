@@ -10,7 +10,6 @@ import android.widget.TextView;
 import wangpos.sdk4.libbasebinder.Core;
 
 public class MainActivity extends AppCompatActivity implements Callback{
-    private Core core;
 
     static {
         System.loadLibrary("native-lib");
@@ -23,14 +22,10 @@ public class MainActivity extends AppCompatActivity implements Callback{
         runCore(this);
     }
 
-    public void makeBeep() throws RemoteException {
-        core.buzzerEx(600);
-    }
-
     public native void runCore(Callback callbackReceiver);
 
     @Override
-    public void callback() {
-        Log.d("happy", "callback executed!");
+    public void callback(String message) {
+        Log.d("happy", "callback executed! " + message);
     }
 }

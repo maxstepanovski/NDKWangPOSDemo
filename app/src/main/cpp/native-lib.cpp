@@ -1,10 +1,6 @@
 #include <jni.h>
 #include <string>
-
-
-void log(JNIEnv *env, jstring message);
-void makeBeep(JNIEnv *env, jobject instance);
-
+#include "main.h"
 
 
 void log(JNIEnv *env, jstring message){
@@ -13,17 +9,7 @@ void log(JNIEnv *env, jstring message){
     env->CallStaticVoidMethod(customLogClass, logMethod, message);
 }
 
-void makeBeep(JNIEnv *env, jobject instance){
-    jclass mainActivity = env->FindClass("com/example/mamba/ndktest/CustomLog");
-    jmethodID startMethod = env->GetMethodID(mainActivity, "makeBeep", "()V");
-    env->CallObjectMethod(instance, startMethod);
-}
-
 JNIEXPORT jint JNI_OnLoad(JavaVM* pVM, void* reserved){
-    JNIEnv *env;
-    if(pVM -> GetEnv((void**) &env, JNI_VERSION_1_6) != JNI_OK){
-//        abort();
-    }
     return JNI_VERSION_1_6;
 }
 
@@ -33,6 +19,7 @@ Java_com_example_mamba_ndktest_MainActivity_runCore(JNIEnv *env, jobject instanc
     jstring string = env->NewStringUTF("Core started");
     log(env, string);
     jclass callbackReceiverClass = env->FindClass("com/example/mamba/ndktest/MainActivity");
-    jmethodID callbackMethod = env->GetMethodID(callbackReceiverClass, "callback", "()V");
-    env->CallVoidMethod(callbackReceiver, callbackMethod);
+    jstring string2 = env->NewStringUTF("callback message");
+    jmethodID callbackMethod = env->GetMethodID(callbackReceiverClass, "callback", "(Ljava/lang/String;)V");
+    env->CallVoidMethod(callbackReceiver, callbackMethod, string2);
 }

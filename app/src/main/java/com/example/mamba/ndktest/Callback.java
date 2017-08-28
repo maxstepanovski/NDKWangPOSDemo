@@ -5,5 +5,5 @@ package com.example.mamba.ndktest;
  */
 
 public interface Callback {
-    void callback();
+    void callback(String message);
 }
