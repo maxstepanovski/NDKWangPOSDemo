@@ -2,22 +2,31 @@
 #include <string>
 
 
+void log(JNIEnv *env, jstring message);
+void makeBeep(JNIEnv *env, jobject instance);
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_mamba_ndktest_MainActivity_runCore(JNIEnv *env, jobject instance) {
-//    jstring jstr = env->NewStringUTF("log message from c++");
-//    jclass mainActivityClass = env->FindClass("com/example/mamba/ndktest/MainActivity");
-//    jmethodID method = env->GetStaticMethodID(mainActivityClass, "log", "(Ljava/lang/String;)V");
-//    env->CallStaticVoidMethod(mainActivityClass, method, jstr);
-
+    jstring string = env->NewStringUTF("Core started");
+    log(env, string);
+//    makeBeep(env, instance);
 }
 
-void log(jstring message, JNIEnv *env){
-//    jstring jstr = env->NewStringUTF("log message from c++");
-    jclass mainActivityClass = env->FindClass("com/example/mamba/ndktest/MainActivity");
-    jmethodID method = env->GetStaticMethodID(mainActivityClass, "log", "(Ljava/lang/String;)V");
-    env->CallStaticVoidMethod(mainActivityClass, method, message);
+void log(JNIEnv *env, jstring message){
+    jclass customLogClass = env->FindClass("com/example/mamba/ndktest/CustomLog");
+    jmethodID logMethod = env->GetStaticMethodID(customLogClass, "log", "(Ljava/lang/String;)V");
+    env->CallStaticVoidMethod(customLogClass, logMethod, message);
 }
+
+void makeBeep(JNIEnv *env, jobject instance){
+    jclass mainActivity = env->FindClass("com/example/mamba/ndktest/CustomLog");
+    jmethodID startMethod = env->GetMethodID(mainActivity, "makeBeep", "()V");
+    env->CallObjectMethod(instance, startMethod);
+}
+
+
+
 
 
 
