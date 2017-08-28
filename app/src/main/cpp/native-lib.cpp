@@ -5,13 +5,7 @@
 void log(JNIEnv *env, jstring message);
 void makeBeep(JNIEnv *env, jobject instance);
 
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_example_mamba_ndktest_MainActivity_runCore(JNIEnv *env, jobject instance) {
-    jstring string = env->NewStringUTF("Core started");
-    log(env, string);
-//    makeBeep(env, instance);
-}
+
 
 void log(JNIEnv *env, jstring message){
     jclass customLogClass = env->FindClass("com/example/mamba/ndktest/CustomLog");
@@ -25,11 +19,20 @@ void makeBeep(JNIEnv *env, jobject instance){
     env->CallObjectMethod(instance, startMethod);
 }
 
+JNIEXPORT jint JNI_OnLoad(JavaVM* pVM, void* reserved){
+    JNIEnv *env;
+    if(pVM -> GetEnv((void**) &env, JNI_VERSION_1_6) != JNI_OK){
+//        abort();
+    }
+    return JNI_VERSION_1_6;
+}
 
-
-
-
-
-
-
-
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_mamba_ndktest_MainActivity_runCore(JNIEnv *env, jobject instance, jobject callbackReceiver) {
+    jstring string = env->NewStringUTF("Core started");
+    log(env, string);
+    jclass callbackReceiverClass = env->FindClass("com/example/mamba/ndktest/MainActivity");
+    jmethodID callbackMethod = env->GetMethodID(callbackReceiverClass, "callback", "()V");
+    env->CallVoidMethod(callbackReceiver, callbackMethod);
+}

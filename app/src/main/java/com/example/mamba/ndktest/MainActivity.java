@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import wangpos.sdk4.libbasebinder.Core;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements Callback{
     private Core core;
 
     static {
@@ -20,29 +20,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                core = new Core(getApplicationContext());
-            }
-        }).start();
-
-        runCore();
+        runCore(this);
     }
 
     public void makeBeep() throws RemoteException {
         core.buzzerEx(600);
     }
 
-    public native void runCore();
+    public native void runCore(Callback callbackReceiver);
 
     @Override
-    public void onClick(View view) {
-        try {
-            core.buzzer();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void callback() {
+        Log.d("happy", "callback executed!");
     }
 }
